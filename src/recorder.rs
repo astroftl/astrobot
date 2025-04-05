@@ -308,9 +308,9 @@ impl RecordingManager {
         if let Some(encoder) = self.get_or_create_encoder(user_id).await {
             if let Some(mut last_timestamp) = self.last_timestamps.get_mut(&user_id) {
                 if let Some(delta) = timestamp.checked_duration_since(*last_timestamp) {
-                    if delta > PACKET_INTERVAL + PACKET_INTERVAL_BUFFER { // Extra buffer here for hiccups.
+                    if delta > PACKET_INTERVAL { // Extra buffer here for hiccups.
                         let extra = delta.saturating_sub(Duration::from_millis(20));
-                        warn!("[{}] <{user_id}> Packet delta of {}ms is more than threshold {}ms! Adding silence...", self.guild_id, delta.as_millis_f64(), (PACKET_INTERVAL + PACKET_INTERVAL_BUFFER).as_millis());
+                        warn!("[{}] <{user_id}> Packet delta of {}ms is more than threshold {}ms! Adding silence...", self.guild_id, delta.as_millis_f64(), (PACKET_INTERVAL).as_millis());
                         encoder.add_silence(extra).await;
                     }
                 } else {
